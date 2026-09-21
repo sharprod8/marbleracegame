@@ -2,12 +2,11 @@ using UnityEngine;
 
 public class OrbitCamera : MonoBehaviour
 {
-    [Header("Target Setup")]
+    [Header("Target")]
     public Transform target;
     public Vector3 offset = new Vector3(0f, 5f, -10f);
 
-    [Header("Rotation Settings")]
-    [Tooltip("Degrees to turn each time Q or E is pressed.")]
+    [Header("Rotation")]
     public float stepAngle = 45f;
 
     public float rotationSmoothSpeed = 10f;

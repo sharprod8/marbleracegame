@@ -3,20 +3,20 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class BallController : MonoBehaviour
 {
-    [Header("Speed & Acceleration")]
+    [Header("Speed")]
     public float accelerationForce = 40f;
-    public float maxFlatSpeed = 30f;
-    public float maxTerminalSpeed = 120f;
-    public float downhillForceMultiplier = 25f;
+    public float maxFlatSpeed = 40f;
+    public float maxTerminalSpeed = 80f;
+    public float downhillForceMultiplier = 20f;
 
-    [Header("Steering")]
+    [Header("Steer")]
     public float speedThreshold = 20f;
     public float speedSteeringPenalty = 0.03f;
 
     [Header("Air")]
-    public float initialAirControl = 0.3f;
-    public float airControlDecayRate = 0.8f;
-    public float extraAirGravity = 25f;
+    public float initialAirControl = 0.9f;
+    public float airControlDecayRate = 0.2f;
+    public float extraAirGravity = 5f;
 
     [Header("Ground Check")]
     public LayerMask groundLayer = ~0;
@@ -84,7 +84,15 @@ public class BallController : MonoBehaviour
             float speedFactor = Mathf.Max(0f, currentSpeed - speedThreshold);
             float speedTurnMultiplier = 1f / (1f + speedFactor * speedSteeringPenalty);
 
-            float airControlMultiplier = isGrounded ? 1f : Mathf.Max(0f, initialAirControl - (timeInAir * airControlDecayRate));
+            float airControlMultiplier;
+            if (isGrounded)
+            {
+                airControlMultiplier = (float) 1f;
+            }
+            else
+            {
+                airControlMultiplier = (float) Mathf.Max(0f, initialAirControl - (timeInAir * airControlDecayRate));
+            }
 
             rb.AddForce(moveDirection * accelerationForce * speedTurnMultiplier * airControlMultiplier, ForceMode.Acceleration);
         }
