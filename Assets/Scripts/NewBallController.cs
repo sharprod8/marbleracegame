@@ -89,8 +89,8 @@ public class NewBallController : MonoBehaviour
             rb.AddForce(Vector3.down * extraAirGravity, ForceMode.Acceleration);
         }
 
-        Debug.Log("rb.linearVelocity.magnitude: " + rb.linearVelocity.magnitude);
-        Debug.Log("rb.angularVelocity.magnitude: " + rb.angularVelocity.magnitude);
+        //Debug.Log("rb.linearVelocity.magnitude: " + rb.linearVelocity.magnitude);
+        //Debug.Log("rb.angularVelocity.magnitude: " + rb.angularVelocity.magnitude);
 
     }
 
