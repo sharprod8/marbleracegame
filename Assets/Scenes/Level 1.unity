@@ -55654,9 +55654,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4cd8231452cff1458201111eb253214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NewBallController
-  accel: 7
-  maxSpeed: 30
-  airControl: 0.05
+  accel: 15
+  maxSpeed: 25
+  airControl: 0.2
   extraAirGravity: 15
   groundLayer:
     serializedVersion: 2
