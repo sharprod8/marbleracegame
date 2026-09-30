@@ -53,7 +53,7 @@ public class FanScript : MonoBehaviour
 
         if (rb != null)
         {
-            StartCoroutine(ExitFan(rb));
+            //StartCoroutine(ExitFan(rb));
         }
     }
 
