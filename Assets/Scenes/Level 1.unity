@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: f15c336556dd74f40aaca655f7767970, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -31553,7 +31553,7 @@ GameObject:
   - component: {fileID: 893881722}
   - component: {fileID: 893881721}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: MarbleSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31574,8 +31574,8 @@ MonoBehaviour:
   marblePrefab: {fileID: 3564125525764188932, guid: b3c68d9afc1e7684b9f917dd7eb85208, type: 3}
   spawnPointMiddle: {fileID: 893881722}
   spawnPointArea: {x: 50, y: 20, z: 15}
-  minMarbles: 1000
-  maxMarbles: 20000
+  minMarbles: 50
+  maxMarbles: 100
   activeMarbles: []
 --- !u!4 &893881722
 Transform:
