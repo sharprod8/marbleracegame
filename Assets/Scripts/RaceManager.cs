@@ -5,6 +5,7 @@ using UnityEngine;
 public class RaceManager : MonoBehaviour
 {
     public MarbleSpawner marbleSpawner;
+    public MarbleProgress playerProgress;
     public Rigidbody playerRb;
     public Transform player;
 
@@ -24,6 +25,7 @@ public class RaceManager : MonoBehaviour
     public TMP_Text jackpotText;
 
     private float raceTimer;
+    private float positionUpdateTimer;
     private int wheelResult;
 
     [Header("wheel")]
@@ -121,20 +123,14 @@ public class RaceManager : MonoBehaviour
 
         if (currentState == RaceState.Racing)
         {
-            int position = 1;
+            positionUpdateTimer += Time.deltaTime;
 
-            foreach (GameObject marble in marbleSpawner.activeMarbles)
+            if (positionUpdateTimer >= 0.1f)
             {
-                if (marble == null)
-                    continue;
+                positionUpdateTimer = 0f;
 
-                if (marble.transform.position.z > player.position.z)
-                {
-                    position++;
-                }
+                positionText.text = CalculatePosition().ToString();
             }
-
-            positionText.text = position.ToString();
         }
     }
 
@@ -181,5 +177,64 @@ public class RaceManager : MonoBehaviour
         finalPositionText.text ="Position: " + positionText.text;
 
         finalMarbleCountText.text ="Marbles: " + marbleCount;
+    }
+
+    private int CalculatePosition()
+    {
+        int position = 1;
+
+        float playerScore = GetProgressScore(playerProgress);
+
+        foreach (GameObject marble in marbleSpawner.activeMarbles)
+        {
+            if (marble == null)
+                continue;
+
+            MarbleProgress progress = marble.GetComponent<MarbleProgress>();
+
+            if (progress == null)
+                continue;
+
+            float marbleScore = GetProgressScore(progress);
+
+            if (marbleScore > playerScore)
+            {
+                position++;
+            }
+        }
+
+        return position;
+    }
+
+    private float GetProgressScore(MarbleProgress progress)
+    {
+        int cp = progress.currentCheckpoint;
+
+        if (cp >= CheckpointManager.Instance.checkpoints.Length - 1)
+        {
+            return cp * 100000f;
+        }
+
+        Transform currentCheckpoint =
+        CheckpointManager.Instance.checkpoints[cp];
+
+        Transform nextCheckpoint =
+        CheckpointManager.Instance.checkpoints[cp + 1];
+
+        float segmentLength =
+        Vector3.Distance(
+        currentCheckpoint.position,
+        nextCheckpoint.position);
+
+        float distanceToNext =
+        Vector3.Distance(
+        progress.transform.position,
+        nextCheckpoint.position);
+
+        float segmentProgress =
+        Mathf.Clamp01(
+        1f - (distanceToNext / segmentLength));
+
+        return cp * 100000f + segmentProgress;
     }
 }

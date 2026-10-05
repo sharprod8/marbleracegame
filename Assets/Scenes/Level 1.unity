@@ -19323,6 +19323,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RaceManager
   marbleSpawner: {fileID: 893881721}
+  playerProgress: {fileID: 1658097677}
   playerRb: {fileID: 1658097673}
   player: {fileID: 1658097671}
   startGate: {fileID: 1835136432}
