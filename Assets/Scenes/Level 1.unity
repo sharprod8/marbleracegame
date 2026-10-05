@@ -18537,6 +18537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5469311fc84e0744f9e61cd1afd6159c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KillPlane
+  orbitCamera: {fileID: 1329388883}
 --- !u!1 &633668088
 GameObject:
   m_ObjectHideFlags: 0
@@ -19324,6 +19325,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RaceManager
   marbleSpawner: {fileID: 893881721}
   playerProgress: {fileID: 1658097677}
+  cameraShake: {fileID: 1329388888}
   playerRb: {fileID: 1658097673}
   player: {fileID: 1658097671}
   startGate: {fileID: 1835136432}
@@ -26155,8 +26157,6 @@ MonoBehaviour:
   marblePrefab: {fileID: 3564125525764188932, guid: b3c68d9afc1e7684b9f917dd7eb85208, type: 3}
   spawnPointMiddle: {fileID: 893881722}
   spawnPointArea: {x: 75, y: 20, z: 15}
-  minMarbles: 50
-  maxMarbles: 100
   activeMarbles: []
   marbleMaterial: {fileID: 0}
   marbleColors:
@@ -26170,6 +26170,8 @@ MonoBehaviour:
   - {r: 0.5, g: 0, b: 1, a: 1}
   - {r: 1, g: 1, b: 1, a: 1}
   - {r: 0, g: 0, b: 0, a: 1}
+  giantChance: 0.05
+  tinyChance: 0.1
 --- !u!4 &893881722
 Transform:
   m_ObjectHideFlags: 0
@@ -38150,6 +38152,7 @@ GameObject:
   - component: {fileID: 1329388885}
   - component: {fileID: 1329388884}
   - component: {fileID: 1329388883}
+  - component: {fileID: 1329388888}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -38291,6 +38294,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 17.477, y: 180, z: 0}
+--- !u!114 &1329388888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1329388882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b64fed1bb340c9c4aa48e05d9f841649, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraShake
 --- !u!1 &1333234238
 GameObject:
   m_ObjectHideFlags: 0
@@ -46974,6 +46989,7 @@ GameObject:
   - component: {fileID: 1658097673}
   - component: {fileID: 1658097672}
   - component: {fileID: 1658097677}
+  - component: {fileID: 1658097678}
   m_Layer: 0
   m_Name: Player Marble
   m_TagString: Player
@@ -47134,6 +47150,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MarbleProgress
   currentCheckpoint: 0
+--- !u!114 &1658097678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1658097670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b64fed1bb340c9c4aa48e05d9f841649, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraShake
 --- !u!1 &1677048379
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,11 +8,12 @@ public class OrbitCamera : MonoBehaviour
 
     [Header("Rotation")]
     public float stepAngle = 45f;
-
     public float rotationSmoothSpeed = 10f;
 
     private float targetYAngle;
     private float currentYAngle;
+
+    private bool cameraFrozen;
 
     private void Start()
     {
@@ -34,14 +35,30 @@ public class OrbitCamera : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (target == null) return;
+        if (target == null)
+            return;
 
-        currentYAngle = Mathf.LerpAngle(currentYAngle, targetYAngle, Time.deltaTime * rotationSmoothSpeed);
+        if (cameraFrozen)
+            return;
+
+        currentYAngle = Mathf.LerpAngle( currentYAngle, targetYAngle, Time.deltaTime * rotationSmoothSpeed);
+
         Quaternion currentRotation = Quaternion.Euler(0f, currentYAngle, 0f);
 
         Vector3 desiredPosition = target.position + currentRotation * offset;
+
         transform.position = desiredPosition;
 
         transform.LookAt(target.position + Vector3.up * 0.5f);
+    }
+
+    public void Freeze()
+    {
+        cameraFrozen = true;
+    }
+
+    public void Unfreeze()
+    {
+        cameraFrozen = false;
     }
 }

@@ -6,6 +6,7 @@ public class RaceManager : MonoBehaviour
 {
     public MarbleSpawner marbleSpawner;
     public MarbleProgress playerProgress;
+    public CameraShake cameraShake;
     public Rigidbody playerRb;
     public Transform player;
 
@@ -215,26 +216,18 @@ public class RaceManager : MonoBehaviour
             return cp * 100000f;
         }
 
-        Transform currentCheckpoint =
-        CheckpointManager.Instance.checkpoints[cp];
+        Transform currentCheckpoint = CheckpointManager.Instance.checkpoints[cp];
 
-        Transform nextCheckpoint =
-        CheckpointManager.Instance.checkpoints[cp + 1];
+        Transform nextCheckpoint = CheckpointManager.Instance.checkpoints[cp + 1];
 
-        float segmentLength =
-        Vector3.Distance(
-        currentCheckpoint.position,
-        nextCheckpoint.position);
+        float segmentLength = Vector3.Distance(currentCheckpoint.position, nextCheckpoint.position);
 
-        float distanceToNext =
-        Vector3.Distance(
-        progress.transform.position,
-        nextCheckpoint.position);
+        float distanceToNext = Vector3.Distance(progress.transform.position, nextCheckpoint.position);
 
-        float segmentProgress =
-        Mathf.Clamp01(
-        1f - (distanceToNext / segmentLength));
+        float segmentProgress = Mathf.Clamp01(1f - (distanceToNext / segmentLength));
 
-        return cp * 100000f + segmentProgress;
+        return cp * 100000f + segmentProgress; //carter here
+
+        /*speed why u tryna not laugh bru*/
     }
 }
