@@ -19,6 +19,9 @@ public class NewBallController : MonoBehaviour
     private Transform cameraTransform;
     private bool isGrounded;
 
+    [HideInInspector]
+    public float gravityMultiplier = 1f;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -55,11 +58,7 @@ public class NewBallController : MonoBehaviour
 
             if (!isGrounded)
             {
-                rb.AddForce(Vector3.down * 5f, ForceMode.Acceleration);
-            }
-            if (!isGrounded)
-            {
-                rb.AddForce(Vector3.down * 5f, ForceMode.Acceleration);
+                rb.AddForce(Vector3.down * 10f, ForceMode.Acceleration);
             }
             if (isGrounded)
             {
@@ -86,7 +85,7 @@ public class NewBallController : MonoBehaviour
         //extra gravity
         if (!isGrounded)
         {
-            rb.AddForce(Vector3.down * extraAirGravity, ForceMode.Acceleration);
+            rb.AddForce(Vector3.down * extraAirGravity * gravityMultiplier, ForceMode.Acceleration);
         }
 
         //Debug.Log("rb.linearVelocity.magnitude: " + rb.linearVelocity.magnitude);

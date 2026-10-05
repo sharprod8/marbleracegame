@@ -9,6 +9,8 @@ public class RaceManager : MonoBehaviour
     public CameraShake cameraShake;
     public Rigidbody playerRb;
     public Transform player;
+    public Light directionalLight;
+    public Light playerLight;
 
     [Header("start stuff")]
     public GameObject startGate;
@@ -62,7 +64,9 @@ public class RaceManager : MonoBehaviour
         BigMarbles,
         TinyMarbles,
         NoSpeedCap,
-        OneLife
+        OneLife,
+        DoubleAcceleration,
+        Darkness
     }
 
     public RaceState currentState;
@@ -82,6 +86,12 @@ public class RaceManager : MonoBehaviour
 
     IEnumerator SpinWheel()
     {
+        Physics.gravity = new Vector3(0f, -9.81f, 0f);
+        directionalLight.enabled = true;
+        directionalLight.intensity = 1f;
+        RenderSettings.ambientLight = Color.white;
+
+
         float delay = 0.05f;
         int spins = Random.Range(20, 35);
 
@@ -333,7 +343,9 @@ public class RaceManager : MonoBehaviour
             RaceModifier.BigMarbles,
             RaceModifier.TinyMarbles,
             RaceModifier.NoSpeedCap,
-            RaceModifier.OneLife
+            RaceModifier.OneLife,
+            RaceModifier.DoubleAcceleration,
+            RaceModifier.Darkness
         };
 
         currentModifier = possibleModifiers[Random.Range(0, possibleModifiers.Length)];
@@ -345,10 +357,21 @@ public class RaceManager : MonoBehaviour
         {
             case RaceModifier.LowGravity:
                 Physics.gravity = new Vector3(0f, -4.9f, 0f);
+                playerRb.GetComponent<NewBallController>().gravityMultiplier = 0.3f;
                 break;
 
             case RaceModifier.NoSpeedCap:
                 playerRb.GetComponent<NewBallController>().maxSpeed = 9999f;
+                break;
+
+            case RaceModifier.DoubleAcceleration:
+                playerRb.GetComponent<NewBallController>().accel *= 2f;
+                break;
+
+            case RaceModifier.Darkness:
+                directionalLight.intensity = 0.0f;
+                RenderSettings.ambientIntensity = 0.0f;
+                playerLight.intensity = 5f;
                 break;
         }
     }
