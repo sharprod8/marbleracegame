@@ -8,13 +8,18 @@ public class MarbleSpawner : MonoBehaviour
     public Transform spawnPointMiddle;
     public Vector3 spawnPointArea = new Vector3(10, 10, 10);
 
-    public int minMarbles = 50;
-    public int maxMarbles = 200;
+    //public int minMarbles = 50;
+    //public int maxMarbles = 200;
 
     public List<GameObject> activeMarbles = new List<GameObject>();
 
+    [Header("colors")]
     public Material marbleMaterial;
     public Color[] marbleColors = { Color.red, Color.blue, Color.green, Color.yellow, Color.magenta, Color.cyan, new Color(1f, 0.5f, 0f), new Color(0.5f, 0f, 1f), Color.white, Color.black };
+
+    [Header("sizes")]
+    public float giantChance = 0.05f;
+    public float tinyChance = 0.10f;
 
     public void SpawnMarbles(int count)
     {
@@ -44,6 +49,27 @@ public class MarbleSpawner : MonoBehaviour
             }
 
             activeMarbles.Add(marble);
+
+            float roll = Random.value;
+
+            if (roll < giantChance)
+            {
+                marble.transform.localScale *= 2f;
+
+                Rigidbody rb = marble.GetComponent<Rigidbody>();
+
+                if (rb != null)
+                    rb.mass *= 4f;
+            }
+            else if (roll < giantChance + tinyChance)
+            {
+                marble.transform.localScale *= 0.5f;
+
+                Rigidbody rb = marble.GetComponent<Rigidbody>();
+
+                if (rb != null)
+                    rb.mass *= 0.5f;
+            }
         }
     }
 
