@@ -13,19 +13,9 @@ public class MarbleSpawner : MonoBehaviour
 
     public List<GameObject> activeMarbles = new List<GameObject>();
 
-    private void Start()
+    public void SpawnMarbles(int count)
     {
-        SpawnMarbles();
-    }
-
-    private void Update()
-    {
-        
-    }
-
-    void SpawnMarbles()
-    {
-        int count = Random.Range(minMarbles, maxMarbles + 1); // (0,10) gives 0 to 9 so just adding +1
+        //int count = Random.Range(minMarbles, maxMarbles + 1); // (0,10) gives 0 to 9 so just adding +1
         
         for (int i = 0;  i < count; i++)
         {
@@ -34,7 +24,14 @@ public class MarbleSpawner : MonoBehaviour
 
             GameObject marble = Instantiate(marblePrefab, spawnPointMiddle.position + randomOffset, Quaternion.identity);
 
-            marble.name = (i == 0) ? "PlayerMarble" : $"Marble {i}";
+            if ((i == 0))
+            {
+                marble.name = "PlayerMarble";
+            }
+            else
+            {
+                marble.name = $"Marble {i}";
+            }
 
             activeMarbles.Add(marble);
         }

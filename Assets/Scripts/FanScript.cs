@@ -4,6 +4,7 @@ public enum FanDirection { Upwards, Forwards }
 public class FanScript : MonoBehaviour
 {
     [Header("fan")]
+    public bool isActive = false;
     public float fanForce = 20f;
     public float fanSpeed = 1f;
     public float exitPower = 4f;
@@ -15,7 +16,9 @@ public class FanScript : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        
+        if (!isActive)
+            return;
+
         Rigidbody rb = other.attachedRigidbody;
 
         if (rb == null)
@@ -29,20 +32,6 @@ public class FanScript : MonoBehaviour
         {
             rb.AddForce(-Vector3.forward * fanForce, ForceMode.VelocityChange);
         }
-        
-
-        //timePassed += Time.deltaTime;
-
-        /*if (timePassed > fanSpeed)
-        {
-            Vector3 velocity = rb.linearVelocity;
-            velocity.y = 0f;
-            rb.linearVelocity = velocity;
-
-            rb.AddForce(Vector3.up * fanForce, ForceMode.VelocityChange);
-
-            timePassed = 0;
-        }*/
     }
 
     private void OnTriggerExit(Collider other)
