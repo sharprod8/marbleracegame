@@ -21,13 +21,14 @@ public class RaceManager : MonoBehaviour
     public TMP_Text speedText;
     public TMP_Text marbleCountText;
     public TMP_Text positionText;
+    public TMP_Text jackpotText;
 
     private float raceTimer;
     private int wheelResult;
 
     [Header("wheel")]
     public TMP_Text wheelResultText;
-    public int[] wheelValues = { 100, 250, 500, 750, 1000 };
+    public int[] wheelValues = { 100, 200, 300, 500, 750, 1000 }; //6 slces
     public float wheelSpinTime = 3f;
     public float wheelUpdateRate = 0.1f;
 
@@ -50,28 +51,55 @@ public class RaceManager : MonoBehaviour
     private void Start()
     {
         countdownText.gameObject.SetActive(false);
+        jackpotText.gameObject.SetActive(false);
         StartCoroutine(SpinWheel());
     }
 
     IEnumerator SpinWheel()
     {
-        float elapsed = 0f;
+        float delay = 0.05f;
+        int spins = Random.Range(20, 35);
 
-        while (elapsed < wheelSpinTime)
+        for (int i = 0; i < spins; i++)
         {
-            int displayValue = wheelValues[Random.Range(0, wheelValues.Length)];
+            int displayValue =wheelValues[Random.Range(0, wheelValues.Length)];
             wheelResultText.text = displayValue.ToString();
+            LeanTween.cancel(wheelResultText.gameObject);
             wheelResultText.transform.localScale = Vector3.one;
-            LeanTween.scale(wheelResultText.gameObject, Vector3.one * 1.2f,0.08f).setEaseOutBack();
-            elapsed += wheelUpdateRate;
 
-            yield return new WaitForSeconds(wheelUpdateRate);
+            LeanTween.scale(wheelResultText.gameObject, Vector3.one * 1.2f, 0.1f).setEaseOutBack();
+
+            yield return new WaitForSeconds(delay);
+
+            delay *= 1.08f;
         }
 
         wheelResult = wheelValues[Random.Range(0, wheelValues.Length)];
-        marbleCount = wheelResult;
+        wheelResultText.text = wheelResult.ToString() + "\nMARBLES!";
+        if (wheelResult == 1000)
+        {
+            wheelResultText.color = Color.red;
+        }
+        else
+        {
+            wheelResultText.color = Color.white;
+        }
 
-        wheelResultText.text = wheelResult.ToString();
+        
+
+        LeanTween.scale(wheelResultText.gameObject, Vector3.one * 1.6f, 0.3f).setEaseOutBack();
+        LeanTween.scale(wheelResultText.gameObject, Vector3.one, 0.2f).setDelay(0.3f);
+        
+        if (wheelResult == 1000)
+        {
+            jackpotText.gameObject.SetActive(true);
+            LeanTween.scale(jackpotText.gameObject, Vector3.one * 1.6f, 0.3f).setEaseOutBack();
+            LeanTween.scale(jackpotText.gameObject, Vector3.one, 0.2f).setDelay(0.3f);
+
+            yield return new WaitForSeconds(1f);
+            jackpotText.gameObject.SetActive(false);
+        }
+        marbleCount = wheelResult;
         marbleSpawner.SpawnMarbles(marbleCount);
 
         yield return new WaitForSeconds(1f);
