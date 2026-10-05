@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -45,11 +46,12 @@ public class RaceManager : MonoBehaviour
     public GameObject resultsPanel;
     public TMP_Text finalTimeText;
     public TMP_Text finalPositionText;
-    public TMP_Text finalMarbleCountText; 
-    
+    public TMP_Text finalMarbleCountText;
+
     [Header("Modifiers")]
     public TMP_Text modifierText;
-    public RaceModifier currentModifier;
+    public List<RaceModifier> activeModifiers = new List<RaceModifier>();
+    private int modsToRoll = 1;
 
     public enum RaceState
     {
@@ -68,7 +70,8 @@ public class RaceManager : MonoBehaviour
         NoSpeedCap,
         OneLife,
         DoubleAcceleration,
-        Darkness
+        Darkness,
+        PlayerBulldozer
     }
 
     public RaceState currentState;
@@ -171,9 +174,6 @@ public class RaceManager : MonoBehaviour
     {
         modifierText.gameObject.SetActive(true);
 
-        float delay = 0.05f;
-        int spins = Random.Range(15, 25);
-
         RaceModifier[] possibleModifiers =
         {
             RaceModifier.LowGravity,
@@ -182,10 +182,11 @@ public class RaceManager : MonoBehaviour
             RaceModifier.NoSpeedCap,
             RaceModifier.OneLife,
             RaceModifier.DoubleAcceleration,
-            RaceModifier.Darkness
+            RaceModifier.Darkness,
+            RaceModifier.PlayerBulldozer
         };
 
-        for (int i = 0; i < spins; i++)
+        /*for (int i = 0; i < spins; i++)
         {
             RaceModifier displayed = possibleModifiers[Random.Range(0, possibleModifiers.Length)];
 
@@ -203,14 +204,47 @@ public class RaceManager : MonoBehaviour
         modifierText.text = currentModifier.ToString();
         LeanTween.scale(modifierText.gameObject, Vector3.one * 1.5f, 0.3f).setEaseOutBack();
 
-        ApplyModifier();
+        ApplyModifier();*/
 
+        for (int modIndex = 0; modIndex < modsToRoll; modIndex++)
+        {
+            float delay = 0.05f;
+            int spins = Random.Range(15, 25);
+
+            for (int i = 0; i < spins; i++)
+            {
+                RaceModifier displayed = possibleModifiers[Random.Range(0, possibleModifiers.Length)];
+
+                modifierText.text = displayed.ToString();
+                LeanTween.cancel(modifierText.gameObject);
+                modifierText.transform.localScale = Vector3.one;
+                LeanTween.scale(modifierText.gameObject, Vector3.one * 1.2f, 0.1f).setEaseOutBack();
+
+                yield return new WaitForSeconds(delay);
+                delay *= 1.08f;
+            }
+
+            RaceModifier chosenMod = RollUniqueModifier(possibleModifiers);
+            activeModifiers.Add(chosenMod);
+
+            modifierText.text = chosenMod.ToString();
+            LeanTween.scale(modifierText.gameObject, Vector3.one * 1.5f, 0.3f).setEaseOutBack();
+
+            ApplySingleModifier(chosenMod);
+
+            yield return new WaitForSeconds(1.5f);
+
+            if (modIndex < modsToRoll - 1)
+            {
+                LeanTween.scale(modifierText.gameObject, Vector3.zero, 0.2f).setEaseInBack();
+                yield return new WaitForSeconds(0.2f);
+            }
+        }
+        modifierText.text = string.Join("\n", activeModifiers);
+        LeanTween.scale(modifierText.gameObject, Vector3.one * 1.3f, 0.3f).setEaseOutBack();
         yield return new WaitForSeconds(2f);
-
         LeanTween.scale(modifierText.gameObject, Vector3.zero, 0.3f).setEaseInBack();
-
         yield return new WaitForSeconds(0.3f);
-
         modifierText.gameObject.SetActive(false);
     }
     private void Update()
@@ -355,7 +389,7 @@ public class RaceManager : MonoBehaviour
         /*speed why u tryna not laugh bru*/
     }
 
-    private void RollModifier()
+    /*private void RollModifier()
     {
         RaceModifier[] possibleModifiers =
         {
@@ -369,9 +403,62 @@ public class RaceManager : MonoBehaviour
         };
 
         currentModifier = possibleModifiers[Random.Range(0, possibleModifiers.Length)];
+    }*/
+
+    private RaceModifier RollUniqueModifier(RaceModifier[] possibleModifiers)
+    {
+        List<RaceModifier> available = new List<RaceModifier>();
+
+        foreach (RaceModifier mod in possibleModifiers)
+        {
+            if (!activeModifiers.Contains(mod))
+            {
+                available.Add(mod);
+            }
+        }
+
+        if (available.Count == 0) return RaceModifier.None;
+
+        return available[Random.Range(0, available.Count)];
     }
 
-    private void ApplyModifier()
+    private void ApplySingleModifier(RaceModifier mod)
+    {
+        NewBallController ballController = playerRb.GetComponent<NewBallController>();
+
+        switch (mod)
+        {
+            case RaceModifier.LowGravity:
+                Physics.gravity = new Vector3(0f, -4.9f, 0f);
+                if (ballController != null) ballController.gravityMultiplier = 0.3f;
+                break;
+
+            case RaceModifier.NoSpeedCap:
+                if (ballController != null) ballController.maxSpeed = 300;
+                break;
+
+            case RaceModifier.DoubleAcceleration:
+                if (ballController != null) ballController.accel *= 5f;
+                break;
+
+            case RaceModifier.Darkness:
+                directionalLight.intensity = 0.0f;
+                RenderSettings.ambientIntensity = 0.0f;
+                RenderSettings.reflectionIntensity = 0.0f;
+                playerLight.intensity = 5f;
+                break;
+
+            case RaceModifier.PlayerBulldozer:
+                if (playerRb != null)
+                {
+                    playerRb.mass *= 10f;
+                    player.transform.localScale *= 3f;
+                }
+                break;
+            }
+        }
+
+    /*private void ApplyModifier()
     {
         switch (currentModifier)
         {
@@ -395,13 +482,14 @@ public class RaceManager : MonoBehaviour
                 playerLight.intensity = 5f;
                 break;
         }
-    }
+    }*/
     private void ConfigureGameMode()
     {
         switch (GameManager.instance.selectedMode)
         {
             case GameMode.Normal:
                 modChance = 0.25f;
+                modsToRoll = 1;
                 break;
 
             case GameMode.Speedrun:
@@ -410,6 +498,7 @@ public class RaceManager : MonoBehaviour
 
             case GameMode.ModMayhem:
                 modChance = 1f;
+                modsToRoll = 3;
                 break;
         }
     }

@@ -27,7 +27,13 @@ public class KillPlane : MonoBehaviour
             orbitCamera.Freeze();
         }
 
-        if (progress.CompareTag("Player") && raceManager.currentModifier == RaceManager.RaceModifier.OneLife)
+        /*if (progress.CompareTag("Player") && raceManager.currentModifier == RaceManager.RaceModifier.OneLife)
+        {
+            raceManager.FinishRace();
+            yield break;
+        }*/
+
+        if (isPlayer && raceManager.activeModifiers.Contains(RaceManager.RaceModifier.OneLife))
         {
             raceManager.FinishRace();
             yield break;

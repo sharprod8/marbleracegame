@@ -9,12 +9,19 @@ public class MarbleAudio : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (!collision.gameObject.CompareTag("NPC Marble"))
+            return;
+
         float force = collision.relativeVelocity.magnitude;
 
         if (force < minimumImpactForce)
             return;
 
-        audioSource.pitch = Random.Range(0.9f, 1.1f);
-        audioSource.PlayOneShot(impactSounds[Random.Range(0, impactSounds.Length)]);
+        audioSource.pitch = Random.Range(0.6f, 1.4f);
+
+        if (impactSounds.Length > 0)
+        {
+            audioSource.PlayOneShot(impactSounds[Random.Range(0, impactSounds.Length)]);
+        }
     }
 }

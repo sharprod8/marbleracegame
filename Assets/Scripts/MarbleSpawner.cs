@@ -56,11 +56,11 @@ public class MarbleSpawner : MonoBehaviour
             if (roll < giantChance)
             {
                 marble.transform.localScale *= 2f;
-
                 Rigidbody rb = marble.GetComponent<Rigidbody>();
-
                 if (rb != null)
+                {
                     rb.mass *= 4f;
+                }
             }
             else if (roll < giantChance + tinyChance)
             {
@@ -69,10 +69,12 @@ public class MarbleSpawner : MonoBehaviour
                 Rigidbody rb = marble.GetComponent<Rigidbody>();
 
                 if (rb != null)
+                {
                     rb.mass *= 0.5f;
+                }
             }
 
-            if (raceManager.currentModifier == RaceManager.RaceModifier.BigMarbles)
+            /*if (raceManager.currentModifier == RaceManager.RaceModifier.BigMarbles)
             {
                 marble.transform.localScale *= 2f;
                 Rigidbody rb = marble.GetComponent<Rigidbody>();
@@ -84,6 +86,51 @@ public class MarbleSpawner : MonoBehaviour
                 marble.transform.localScale *= 0.5f;
                 Rigidbody rb = marble.GetComponent<Rigidbody>();
                 rb.mass *= 0.5f;
+            }*/
+
+            if (raceManager.activeModifiers.Contains(RaceManager.RaceModifier.BigMarbles))
+            {
+                if (Random.value < 0.5f)
+                {
+                    marble.transform.localScale *= 2f;
+                    Rigidbody rb = marble.GetComponent<Rigidbody>();
+                    if (rb != null)
+                    {
+                        rb.mass *= 4f;
+                    }
+
+                    if (Random.value < 0.5f)
+                    {
+                        marble.transform.localScale *= 2f;
+                        if (rb != null)
+                        {
+                            rb.mass *= 4f;
+                        }
+                    }
+                }
+            }
+
+            if (raceManager.activeModifiers.Contains(RaceManager.RaceModifier.TinyMarbles))
+            {
+                if (Random.value < 0.5f)
+                {
+                    marble.transform.localScale *= 0.5f;
+                    Rigidbody rb = marble.GetComponent<Rigidbody>();
+                    if (rb != null)
+                    {
+                        rb.mass *= 0.5f;
+                    }
+
+                    if (Random.value < 0.5f)
+                    {
+                        marble.transform.localScale *= 0.5f;
+                        if (rb != null)
+                        {
+                            rb.mass *= 0.5f;
+                        }
+                    }
+
+                }
             }
         }
     }
