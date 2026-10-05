@@ -13,6 +13,7 @@ public class RaceManager : MonoBehaviour
     [Header("start stuff")]
     public GameObject startGate;
     public FanScript[] fans;
+    public float modChance = 1f;
 
     [Header("race")]
     public int marbleCount = 100;
@@ -24,6 +25,8 @@ public class RaceManager : MonoBehaviour
     public TMP_Text marbleCountText;
     public TMP_Text positionText;
     public TMP_Text jackpotText;
+    private Vector2 wheelDefaultPos;
+    private Vector2 modifierDefaultPos;
 
     private float raceTimer;
     private float positionUpdateTimer;
@@ -39,7 +42,10 @@ public class RaceManager : MonoBehaviour
     public GameObject resultsPanel;
     public TMP_Text finalTimeText;
     public TMP_Text finalPositionText;
-    public TMP_Text finalMarbleCountText;
+    public TMP_Text finalMarbleCountText; [Header("Modifiers")]
+
+    public TMP_Text modifierText;
+    public RaceModifier currentModifier;
 
     public enum RaceState
     {
@@ -49,12 +55,28 @@ public class RaceManager : MonoBehaviour
         Finished
     }
 
+    public enum RaceModifier
+    {
+        None,
+        LowGravity,
+        BigMarbles,
+        TinyMarbles,
+        NoSpeedCap,
+        OneLife
+    }
+
     public RaceState currentState;
 
     private void Start()
     {
         countdownText.gameObject.SetActive(false);
         jackpotText.gameObject.SetActive(false);
+        modifierText.gameObject.SetActive(false);
+
+        wheelDefaultPos = wheelResultText.rectTransform.anchoredPosition;
+
+        modifierDefaultPos = modifierText.rectTransform.anchoredPosition;
+
         StartCoroutine(SpinWheel());
     }
 
@@ -103,6 +125,23 @@ public class RaceManager : MonoBehaviour
             jackpotText.gameObject.SetActive(false);
         }
         marbleCount = wheelResult;
+
+        if (Random.value < modChance)
+        {
+            yield return new WaitForSeconds(1f);
+
+            LeanTween.scale(wheelResultText.gameObject, Vector3.zero, 0.3f).setEaseInBack();
+
+            yield return new WaitForSeconds(0.3f);
+
+            wheelResultText.gameObject.SetActive(false);
+
+            yield return StartCoroutine(SpinModifier());
+
+            wheelResultText.gameObject.SetActive(true);
+            wheelResultText.transform.localScale = Vector3.one;
+        }
+
         marbleSpawner.SpawnMarbles(marbleCount);
 
         yield return new WaitForSeconds(1f);
@@ -110,6 +149,50 @@ public class RaceManager : MonoBehaviour
         StartCoroutine(StartCountdown());
     }
 
+    private IEnumerator SpinModifier()
+    {
+        modifierText.gameObject.SetActive(true);
+
+        float delay = 0.05f;
+        int spins = Random.Range(15, 25);
+
+        RaceModifier[] possibleModifiers =
+        {
+            RaceModifier.LowGravity,
+            RaceModifier.BigMarbles,
+            RaceModifier.TinyMarbles,
+            RaceModifier.NoSpeedCap,
+            RaceModifier.OneLife
+        };
+
+        for (int i = 0; i < spins; i++)
+        {
+            RaceModifier displayed = possibleModifiers[Random.Range(0, possibleModifiers.Length)];
+
+            modifierText.text = displayed.ToString();
+            LeanTween.cancel(modifierText.gameObject);
+            modifierText.transform.localScale = Vector3.one;
+            LeanTween.scale(modifierText.gameObject, Vector3.one * 1.2f, 0.1f).setEaseOutBack();
+
+            yield return new WaitForSeconds(delay);
+
+            delay *= 1.08f;
+        }
+
+        RollModifier();
+        modifierText.text = currentModifier.ToString();
+        LeanTween.scale(modifierText.gameObject, Vector3.one * 1.5f, 0.3f).setEaseOutBack();
+
+        ApplyModifier();
+
+        yield return new WaitForSeconds(2f);
+
+        LeanTween.scale(modifierText.gameObject, Vector3.zero, 0.3f).setEaseInBack();
+
+        yield return new WaitForSeconds(0.3f);
+
+        modifierText.gameObject.SetActive(false);
+    }
     private void Update()
     {
         if (currentState == RaceState.Racing)
@@ -229,5 +312,33 @@ public class RaceManager : MonoBehaviour
         return cp * 100000f + segmentProgress; //carter here
 
         /*speed why u tryna not laugh bru*/
+    }
+
+    private void RollModifier()
+    {
+        RaceModifier[] possibleModifiers =
+        {
+            RaceModifier.LowGravity,
+            RaceModifier.BigMarbles,
+            RaceModifier.TinyMarbles,
+            RaceModifier.NoSpeedCap,
+            RaceModifier.OneLife
+        };
+
+        currentModifier = possibleModifiers[Random.Range(0, possibleModifiers.Length)];
+    }
+
+    private void ApplyModifier()
+    {
+        switch (currentModifier)
+        {
+            case RaceModifier.LowGravity:
+                Physics.gravity = new Vector3(0f, -4.9f, 0f);
+                break;
+
+            case RaceModifier.NoSpeedCap:
+                playerRb.GetComponent<NewBallController>().maxSpeed = 9999f;
+                break;
+        }
     }
 }

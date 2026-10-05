@@ -6,6 +6,7 @@ public class MarbleSpawner : MonoBehaviour
 {
     public GameObject marblePrefab;
     public Transform spawnPointMiddle;
+    public RaceManager raceManager;
     public Vector3 spawnPointArea = new Vector3(10, 10, 10);
 
     //public int minMarbles = 50;
@@ -69,6 +70,20 @@ public class MarbleSpawner : MonoBehaviour
 
                 if (rb != null)
                     rb.mass *= 0.5f;
+            }
+
+            if (raceManager.currentModifier == RaceManager.RaceModifier.BigMarbles)
+            {
+                marble.transform.localScale *= 2f;
+                Rigidbody rb = marble.GetComponent<Rigidbody>();
+                rb.mass *= 4f;
+            }
+
+            if (raceManager.currentModifier == RaceManager.RaceModifier.TinyMarbles)
+            {
+                marble.transform.localScale *= 0.5f;
+                Rigidbody rb = marble.GetComponent<Rigidbody>();
+                rb.mass *= 0.5f;
             }
         }
     }

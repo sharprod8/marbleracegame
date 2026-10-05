@@ -4,6 +4,7 @@ using UnityEngine;
 public class KillPlane : MonoBehaviour
 {
     public OrbitCamera orbitCamera;
+    public RaceManager raceManager;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -24,6 +25,12 @@ public class KillPlane : MonoBehaviour
         if (isPlayer)
         {
             orbitCamera.Freeze();
+        }
+
+        if (progress.CompareTag("Player") && raceManager.currentModifier == RaceManager.RaceModifier.OneLife)
+        {
+            raceManager.FinishRace();
+            yield break;
         }
 
         rb.linearVelocity = Vector3.zero;

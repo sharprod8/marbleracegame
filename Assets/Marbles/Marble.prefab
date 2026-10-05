@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 345019004239960263}
   m_Layer: 0
   m_Name: Marble
-  m_TagString: Untagged
+  m_TagString: NPC Marble
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
