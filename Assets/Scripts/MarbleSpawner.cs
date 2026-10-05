@@ -13,6 +13,9 @@ public class MarbleSpawner : MonoBehaviour
 
     public List<GameObject> activeMarbles = new List<GameObject>();
 
+    public Material marbleMaterial;
+    public Color[] marbleColors = { Color.red, Color.blue, Color.green, Color.yellow, Color.magenta, Color.cyan, new Color(1f, 0.5f, 0f), new Color(0.5f, 0f, 1f), Color.white, Color.black };
+
     public void SpawnMarbles(int count)
     {
         //int count = Random.Range(minMarbles, maxMarbles + 1); // (0,10) gives 0 to 9 so just adding +1
@@ -23,6 +26,13 @@ public class MarbleSpawner : MonoBehaviour
             Vector3 randomOffset = new Vector3(Random.Range(-spawnPointArea.x / 2f, spawnPointArea.x / 2f), Random.Range(-spawnPointArea.y / 2f, spawnPointArea.y / 2f), Random.Range(-spawnPointArea.z / 2f, spawnPointArea.z / 2f));
 
             GameObject marble = Instantiate(marblePrefab, spawnPointMiddle.position + randomOffset, Quaternion.identity);
+            Renderer renderer = marble.GetComponent<Renderer>();
+
+            if (renderer != null)
+            {
+                renderer.material.color = marbleColors[Random.Range(0, marbleColors.Length)];
+            }
+
 
             if ((i == 0))
             {
