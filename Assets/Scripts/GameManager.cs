@@ -1,18 +1,17 @@
 using UnityEngine;
 
+public enum GameMode
+{
+    Normal,
+    Speedrun,
+    ModMayhem
+}
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    public enum GameMode
-    {
-        Normal,
-        Speedrun,
-        ModMayhem
-    }
-
-    public GameMode selectedMode =
-    GameMode.Normal;
+    public GameMode selectedMode;
 
     private void Awake()
     {

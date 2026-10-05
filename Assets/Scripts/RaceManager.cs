@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RaceManager : MonoBehaviour
 {
@@ -36,7 +37,7 @@ public class RaceManager : MonoBehaviour
 
     [Header("wheel")]
     public TMP_Text wheelResultText;
-    public int[] wheelValues = { 100, 200, 300, 500, 750, 1000 }; //6 slces
+    public int[] wheelValues = { 100, 200, 300, 500, 750, 1000, 2000, 3000}; //8 slices
     public float wheelSpinTime = 3f;
     public float wheelUpdateRate = 0.1f;
 
@@ -44,8 +45,9 @@ public class RaceManager : MonoBehaviour
     public GameObject resultsPanel;
     public TMP_Text finalTimeText;
     public TMP_Text finalPositionText;
-    public TMP_Text finalMarbleCountText; [Header("Modifiers")]
-
+    public TMP_Text finalMarbleCountText; 
+    
+    [Header("Modifiers")]
     public TMP_Text modifierText;
     public RaceModifier currentModifier;
 
@@ -77,8 +79,9 @@ public class RaceManager : MonoBehaviour
         jackpotText.gameObject.SetActive(false);
         modifierText.gameObject.SetActive(false);
 
-        wheelDefaultPos = wheelResultText.rectTransform.anchoredPosition;
+        ConfigureGameMode();
 
+        wheelDefaultPos = wheelResultText.rectTransform.anchoredPosition;
         modifierDefaultPos = modifierText.rectTransform.anchoredPosition;
 
         StartCoroutine(SpinWheel());
@@ -90,6 +93,7 @@ public class RaceManager : MonoBehaviour
         directionalLight.enabled = true;
         directionalLight.intensity = 1f;
         RenderSettings.ambientLight = Color.white;
+        RenderSettings.reflectionIntensity = 1.0f;
 
 
         float delay = 0.05f;
@@ -115,7 +119,7 @@ public class RaceManager : MonoBehaviour
         AudioManager.instance.PlayWheelFinish();
 
         wheelResultText.text = wheelResult.ToString() + "\nMARBLES!";
-        if (wheelResult == 1000)
+        if (wheelResult == 3000)
         {
             wheelResultText.color = Color.red;
         }
@@ -129,7 +133,7 @@ public class RaceManager : MonoBehaviour
         LeanTween.scale(wheelResultText.gameObject, Vector3.one * 1.6f, 0.3f).setEaseOutBack();
         LeanTween.scale(wheelResultText.gameObject, Vector3.one, 0.2f).setDelay(0.3f);
         
-        if (wheelResult == 1000)
+        if (wheelResult == 3000)
         {
             jackpotText.gameObject.SetActive(true);
             LeanTween.scale(jackpotText.gameObject, Vector3.one * 1.6f, 0.3f).setEaseOutBack();
@@ -176,7 +180,9 @@ public class RaceManager : MonoBehaviour
             RaceModifier.BigMarbles,
             RaceModifier.TinyMarbles,
             RaceModifier.NoSpeedCap,
-            RaceModifier.OneLife
+            RaceModifier.OneLife,
+            RaceModifier.DoubleAcceleration,
+            RaceModifier.Darkness
         };
 
         for (int i = 0; i < spins; i++)
@@ -275,6 +281,11 @@ public class RaceManager : MonoBehaviour
         resultsPanel.SetActive(true);
         AudioManager.instance.StartFinishMusic();
 
+
+        CanvasGroup cg = resultsPanel.GetComponent<CanvasGroup>();
+        cg.alpha = 0f;
+        LeanTween.scale(resultsPanel, Vector3.one, 0.4f).setEaseOutBack();
+        LeanTween.alphaCanvas(cg, 1f, 0.3f);
         LeanTween.scale(resultsPanel, Vector3.one, 0.4f).setEaseOutBack();
 
         finalTimeText.text ="Time: " + raceTimer.ToString("F2"); //still two d.p
@@ -282,6 +293,15 @@ public class RaceManager : MonoBehaviour
         finalPositionText.text ="Position: " + positionText.text;
 
         finalMarbleCountText.text ="Marbles: " + marbleCount;
+    }
+
+    public void ReplayRace()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadScene("MenuScene");
     }
 
     private int CalculatePosition()
@@ -371,7 +391,25 @@ public class RaceManager : MonoBehaviour
             case RaceModifier.Darkness:
                 directionalLight.intensity = 0.0f;
                 RenderSettings.ambientIntensity = 0.0f;
+                RenderSettings.reflectionIntensity = 0.0f;
                 playerLight.intensity = 5f;
+                break;
+        }
+    }
+    private void ConfigureGameMode()
+    {
+        switch (GameManager.instance.selectedMode)
+        {
+            case GameMode.Normal:
+                modChance = 0.25f;
+                break;
+
+            case GameMode.Speedrun:
+                modChance = 0f;
+                break;
+
+            case GameMode.ModMayhem:
+                modChance = 1f;
                 break;
         }
     }
