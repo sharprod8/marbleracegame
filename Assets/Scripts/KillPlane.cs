@@ -36,6 +36,11 @@ public class KillPlane : MonoBehaviour
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
 
+        if (isPlayer)
+        {
+            AudioManager.instance.PlayKillPlane();
+        }
+
         yield return new WaitForSeconds(0.5f);
 
         Transform checkpoint = CheckpointManager.Instance.checkpoints[progress.currentCheckpoint];

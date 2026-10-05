@@ -15,6 +15,9 @@ public class OrbitCamera : MonoBehaviour
 
     private bool cameraFrozen;
 
+    public KeyCode rotateLeft = KeyCode.Q;
+    public KeyCode rotateRight = KeyCode.E;
+
     private void Start()
     {
         targetYAngle = transform.eulerAngles.y;
@@ -23,11 +26,11 @@ public class OrbitCamera : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(rotateLeft))
         {
             targetYAngle -= stepAngle;
         }
-        else if (Input.GetKeyDown(KeyCode.E))
+        else if (Input.GetKeyDown(rotateRight))
         {
             targetYAngle += stepAngle;
         }

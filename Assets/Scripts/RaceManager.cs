@@ -89,6 +89,8 @@ public class RaceManager : MonoBehaviour
         {
             int displayValue =wheelValues[Random.Range(0, wheelValues.Length)];
             wheelResultText.text = displayValue.ToString();
+            AudioManager.instance.PlayWheelTick();
+
             LeanTween.cancel(wheelResultText.gameObject);
             wheelResultText.transform.localScale = Vector3.one;
 
@@ -100,6 +102,8 @@ public class RaceManager : MonoBehaviour
         }
 
         wheelResult = wheelValues[Random.Range(0, wheelValues.Length)];
+        AudioManager.instance.PlayWheelFinish();
+
         wheelResultText.text = wheelResult.ToString() + "\nMARBLES!";
         if (wheelResult == 1000)
         {
@@ -224,16 +228,22 @@ public class RaceManager : MonoBehaviour
         wheelResultText.gameObject.SetActive(false);
         countdownText.gameObject.SetActive(true);
 
+        AudioManager.instance.StartRaceMusic();
+
         countdownText.text = "3";
+        AudioManager.instance.PlayCountdown();
         yield return new WaitForSeconds(1);
 
         countdownText.text = "2";
+        AudioManager.instance.PlayCountdown();
         yield return new WaitForSeconds(1);
 
         countdownText.text = "1";
+        AudioManager.instance.PlayCountdown();
         yield return new WaitForSeconds(1);
 
         countdownText.text = "GO!";
+        AudioManager.instance.PlayGo();
         currentState = RaceState.Racing;
 
         Destroy(startGate);
@@ -253,6 +263,7 @@ public class RaceManager : MonoBehaviour
         currentState = RaceState.Finished;
         resultsPanel.transform.localScale = Vector3.zero;
         resultsPanel.SetActive(true);
+        AudioManager.instance.StartFinishMusic();
 
         LeanTween.scale(resultsPanel, Vector3.one, 0.4f).setEaseOutBack();
 
