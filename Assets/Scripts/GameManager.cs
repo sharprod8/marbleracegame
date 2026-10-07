@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
 
     public GameMode selectedMode;
 
+    public int playerCount = 1;
+
     private void Awake()
     {
         if (instance == null)

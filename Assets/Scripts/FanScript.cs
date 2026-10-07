@@ -1,6 +1,15 @@
 using System.Collections;
 using UnityEngine;
-public enum FanDirection { Upwards, Forwards }
+public enum FanDirection
+{
+    Forwards,
+    Backwards,
+    Left,
+    Right,
+    Upwards,
+    Downwards
+}
+
 public class FanScript : MonoBehaviour
 {
     [Header("fan")]
@@ -24,13 +33,31 @@ public class FanScript : MonoBehaviour
         if (rb == null)
             return;
 
-        if (fanDirection == FanDirection.Upwards)
+        switch (fanDirection)
         {
-            rb.AddForce(Vector3.up * fanForce, ForceMode.VelocityChange);
-        }
-        else if (fanDirection == FanDirection.Forwards)
-        {
-            rb.AddForce(-Vector3.forward * fanForce, ForceMode.VelocityChange);
+            case FanDirection.Forwards:
+                rb.AddForce(transform.forward * fanForce, ForceMode.VelocityChange);
+                break;
+
+            case FanDirection.Backwards:
+                rb.AddForce(-transform.forward * fanForce, ForceMode.VelocityChange);
+                break;
+
+            case FanDirection.Left:
+                rb.AddForce(-transform.right * fanForce, ForceMode.VelocityChange);
+                break;
+
+            case FanDirection.Right:
+                rb.AddForce(transform.right * fanForce, ForceMode.VelocityChange);
+                break;
+
+            case FanDirection.Upwards:
+                rb.AddForce(transform.up * fanForce, ForceMode.VelocityChange);
+                break;
+
+            case FanDirection.Downwards:
+                rb.AddForce(-transform.up * fanForce, ForceMode.VelocityChange);
+                break;
         }
     }
 
